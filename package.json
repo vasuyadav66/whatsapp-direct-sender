@@ -1,0 +1,11 @@
+{
+  "name": "whatsapp-direct-sender",
+  "version": "1.0.0",
+  "description": "Send WhatsApp messages directly without saving contact numbers.",
+  "scripts": {
+    "start": "npx serve . -l 3000"
+  },
+  "keywords": ["whatsapp", "direct-chat", "click-to-chat"],
+  "author": "",
+  "license": "MIT"
+}
