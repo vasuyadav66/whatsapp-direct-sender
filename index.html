@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DirectChat — Send Messages via WhatsApp, Instagram, Snapchat, Messenger & SMS</title>
+  <title>DirectChat — Send Messages with Identity, Date & Time</title>
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2325D366'><path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z'/></svg>">
@@ -48,7 +48,7 @@
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-800 dark:bg-[#0c1317] dark:text-slate-100 antialiased selection:bg-emerald-500 selection:text-white transition-colors duration-300">
 
-  <!-- Background Decorative Ambient Blobs -->
+  <!-- Ambient Blobs -->
   <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
     <div class="absolute -top-32 -left-32 w-96 h-96 bg-emerald-400/20 dark:bg-emerald-500/10 rounded-full blur-3xl"></div>
     <div class="absolute top-1/2 -right-32 w-96 h-96 bg-purple-400/20 dark:bg-purple-500/10 rounded-full blur-3xl"></div>
@@ -75,10 +75,16 @@
           </div>
         </div>
 
-        <!-- Controls: History, Theme Toggle -->
+        <!-- Controls: Clock, History, Theme Toggle -->
         <div class="flex items-center space-x-2 sm:space-x-3">
+          <!-- Live Date & Time Clock Badge -->
+          <div id="live-clock-badge" class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-mono font-medium border border-slate-200/80 dark:border-slate-700/80 shadow-sm" title="Current Local Time & Date">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-500"></i>
+            <span id="live-clock-text">--:-- --</span>
+          </div>
+
           <button id="toggle-history-btn" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all">
-            <i data-lucide="clock" class="w-4 h-4"></i>
+            <i data-lucide="history" class="w-4 h-4"></i>
             <span class="hidden sm:inline">Recents</span>
             <span id="history-count-badge" class="hidden px-1.5 py-0.2 bg-emerald-500 text-white text-[10px] rounded-full font-bold">0</span>
           </button>
@@ -98,13 +104,13 @@
       <div class="text-center max-w-xl mx-auto mb-6">
         <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-2.5">
           <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-indicator"></span>
-          <span>Sending Identity: <b class="underline">star66</b></span>
+          <span>Sending as <b class="underline">star66</b> with Date & Time</span>
         </div>
         <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Send Direct Messages Across <span class="bg-gradient-to-r from-emerald-500 via-pink-500 to-blue-500 bg-clip-text text-transparent">Any Platform</span>
         </h1>
         <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-          Enter any Phone Number or Social ID. Your message is formatted and sent with the name of <b>star66</b> without saving contacts.
+          Enter any phone number or username. Your message includes sender identity <b>star66</b> and timestamp automatically.
         </p>
       </div>
 
@@ -151,31 +157,43 @@
           </div>
         </div>
 
-        <!-- Sender Identity Setting (Configured as star66) -->
-        <div class="mb-5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
-          <div class="flex items-center space-x-2.5">
-            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <i data-lucide="user-check" class="w-4 h-4"></i>
-            </div>
-            <div>
-              <div class="flex items-center space-x-1.5">
-                <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Sender Name:</span>
-                <input 
-                  type="text" 
-                  id="sender-name-input" 
-                  value="star66" 
-                  class="text-xs font-mono font-bold bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-2 py-0.5 rounded text-emerald-600 dark:text-emerald-400 w-24 outline-none focus:ring-1 focus:ring-emerald-500" 
-                  title="Sender name included with message"
-                />
+        <!-- Sender Identity & Timestamp Settings -->
+        <div class="mb-5 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2.5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            
+            <div class="flex items-center space-x-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
               </div>
-              <p class="text-[10px] text-slate-400">Attached to your message as the sender</p>
+              <div>
+                <div class="flex items-center space-x-1.5">
+                  <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Sender:</span>
+                  <input 
+                    type="text" 
+                    id="sender-name-input" 
+                    value="star66" 
+                    class="text-xs font-mono font-bold bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-2 py-0.5 rounded text-emerald-600 dark:text-emerald-400 w-24 outline-none focus:ring-1 focus:ring-emerald-500" 
+                    title="Sender name included with message"
+                  />
+                </div>
+                <p class="text-[10px] text-slate-400">Attached to your message</p>
+              </div>
             </div>
-          </div>
 
-          <label class="flex items-center space-x-2 cursor-pointer select-none">
-            <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Include Tag</span>
-            <input type="checkbox" id="include-sender-checkbox" checked class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" />
-          </label>
+            <!-- Toggles: Include Name & Include Date/Time -->
+            <div class="flex items-center space-x-3 text-[11px] text-slate-700 dark:text-slate-300 pl-10 sm:pl-0">
+              <label class="flex items-center space-x-1.5 cursor-pointer select-none" title="Include sender name tag in message">
+                <input type="checkbox" id="include-sender-checkbox" checked class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" />
+                <span class="font-medium">Include Name</span>
+              </label>
+
+              <label class="flex items-center space-x-1.5 cursor-pointer select-none" title="Include current date & time in message">
+                <input type="checkbox" id="include-datetime-checkbox" checked class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" />
+                <span class="font-medium">Include Date & Time</span>
+              </label>
+            </div>
+
+          </div>
         </div>
 
         <form id="chat-form" onsubmit="event.preventDefault(); handleSend();" class="space-y-5">
@@ -280,6 +298,12 @@
               <button type="button" class="preset-chip text-[11px] font-medium px-2.5 py-1 rounded-full bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 dark:bg-slate-800 dark:hover:bg-emerald-950/60 dark:text-slate-300 dark:hover:text-emerald-300 transition-colors border border-slate-200 dark:border-slate-700/80">
                 📄 Please send details
               </button>
+
+              <!-- Stamp Current Time Chip -->
+              <button type="button" id="insert-time-chip" class="text-[11px] font-medium px-2.5 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:hover:bg-emerald-900 dark:text-emerald-300 transition-colors border border-emerald-200 dark:border-emerald-800 flex items-center space-x-1 cursor-pointer">
+                <i data-lucide="calendar" class="w-3 h-3"></i>
+                <span>Insert Timestamp</span>
+              </button>
             </div>
 
             <!-- Textarea -->
@@ -302,11 +326,14 @@
             </div>
           </div>
 
-          <!-- Live Preview of Final Message with star66 -->
-          <div class="p-3 rounded-2xl bg-slate-100/70 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 text-xs">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Message Preview for Recipient:</span>
-            <div id="live-message-preview" class="font-mono text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
-              — Sent by star66
+          <!-- Live Preview of Final Message with star66 and Date/Time -->
+          <div class="p-3.5 rounded-2xl bg-slate-100/70 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 text-xs">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Message Preview for Recipient:</span>
+              <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-medium">Includes Identity & Time</span>
+            </div>
+            <div id="live-message-preview" class="font-mono text-slate-800 dark:text-slate-200 whitespace-pre-wrap bg-white dark:bg-slate-950/60 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
+              — Sent by star66 • Date & Time
             </div>
           </div>
 
@@ -418,7 +445,7 @@
     <!-- Footer -->
     <footer class="w-full py-5 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200/60 dark:border-slate-800/60">
       <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p>DirectChat — Multi-platform direct sender with identity star66.</p>
+        <p>DirectChat — Multi-platform direct sender with identity star66, Date & Time.</p>
         <p class="flex items-center space-x-1">
           <span>WhatsApp • Instagram • Snapchat • Messenger • SMS</span>
         </p>

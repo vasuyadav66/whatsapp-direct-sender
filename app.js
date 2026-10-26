@@ -1,4 +1,4 @@
-// DirectChat Multi-Platform Logic (WhatsApp, Instagram, Snapchat, Messenger, SMS)
+// DirectChat Multi-Platform Logic with Identity star66, Date & Time
 
 // Current State
 let currentPlatform = 'whatsapp'; // 'whatsapp' | 'instagram' | 'snapchat' | 'messenger' | 'sms'
@@ -9,6 +9,9 @@ let chatHistory = [];
 const platformTabs = document.querySelectorAll('.platform-tab');
 const senderNameInput = document.getElementById('sender-name-input');
 const includeSenderCheckbox = document.getElementById('include-sender-checkbox');
+const includeDatetimeCheckbox = document.getElementById('include-datetime-checkbox');
+const insertTimeChip = document.getElementById('insert-time-chip');
+const liveClockText = document.getElementById('live-clock-text');
 
 const phoneInputContainer = document.getElementById('phone-input-container');
 const socialInputContainer = document.getElementById('social-input-container');
@@ -60,6 +63,35 @@ const themeToggleBtn = document.getElementById('theme-toggle-btn');
 const themeIcon = document.getElementById('theme-icon');
 const toastContainer = document.getElementById('toast-container');
 
+// Date & Time Formatter
+function formatDateTime(d = new Date()) {
+  const day = d.getDate();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const month = months[d.getMonth()];
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = d.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`;
+}
+
+// Live Clock Ticker
+function startLiveClock() {
+  function tick() {
+    if (liveClockText) {
+      liveClockText.textContent = formatDateTime();
+    }
+  }
+  tick();
+  setInterval(() => {
+    tick();
+    // Refresh preview if time changed
+    updateLiveMessagePreview();
+  }, 1000);
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
@@ -67,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHistory();
   setupEventListeners();
   autoDetectCountry();
+  startLiveClock();
   updateLiveMessagePreview();
   updatePlatformUI(currentPlatform);
 
@@ -176,21 +209,32 @@ function selectCountry(country) {
   updatePhonePreview();
 }
 
-// Format message with sender identity "star66"
+// Format message with sender identity "star66", Date and Time
 function getFormattedMessage() {
   const userMsg = messageInput.value.trim();
   const sender = (senderNameInput.value.trim()) || 'star66';
-  const include = includeSenderCheckbox.checked;
+  const includeSender = includeSenderCheckbox ? includeSenderCheckbox.checked : true;
+  const includeDatetime = includeDatetimeCheckbox ? includeDatetimeCheckbox.checked : true;
 
-  if (!include) {
+  const tagParts = [];
+  if (includeSender) {
+    tagParts.push(`Sent by ${sender}`);
+  }
+  if (includeDatetime) {
+    tagParts.push(formatDateTime());
+  }
+
+  const tag = tagParts.length > 0 ? `— ${tagParts.join(' • ')}` : '';
+
+  if (!tag) {
     return userMsg || '';
   }
 
   if (!userMsg) {
-    return `— Sent by ${sender}`;
+    return tag;
   }
 
-  return `${userMsg}\n\n— Sent by ${sender}`;
+  return `${userMsg}\n\n${tag}`;
 }
 
 function updateLiveMessagePreview() {
@@ -202,7 +246,6 @@ function updateLiveMessagePreview() {
 function updatePlatformUI(platform) {
   currentPlatform = platform;
 
-  // Update tabs styling
   platformTabs.forEach(tab => {
     const tabPlatform = tab.getAttribute('data-platform');
     if (tabPlatform === platform) {
@@ -219,7 +262,6 @@ function updatePlatformUI(platform) {
 
   const sender = senderNameInput.value.trim() || 'star66';
 
-  // Toggle between Phone Input and Social Username Input
   if (platform === 'whatsapp' || platform === 'sms') {
     phoneInputContainer.classList.remove('hidden');
     socialInputContainer.classList.add('hidden');
@@ -230,15 +272,15 @@ function updatePlatformUI(platform) {
     if (platform === 'instagram') {
       socialLabelText.textContent = 'Instagram Username / ID';
       socialIdInput.placeholder = 'username (e.g. zuck)';
-      socialHelperText.textContent = `Directs to Instagram DM with pre-copied message signed as ${sender}.`;
+      socialHelperText.textContent = `Directs to Instagram DM with message signed as ${sender} + timestamp.`;
     } else if (platform === 'snapchat') {
       socialLabelText.textContent = 'Snapchat Username';
       socialIdInput.placeholder = 'snapchat username';
-      socialHelperText.textContent = `Directs to Snapchat chat with message signed as ${sender}.`;
+      socialHelperText.textContent = `Directs to Snapchat chat with message signed as ${sender} + timestamp.`;
     } else if (platform === 'messenger') {
       socialLabelText.textContent = 'Facebook Messenger ID / Username';
       socialIdInput.placeholder = 'facebook username or ID';
-      socialHelperText.textContent = `Opens Facebook Messenger chat with message signed as ${sender}.`;
+      socialHelperText.textContent = `Opens Facebook Messenger chat with message signed as ${sender} + timestamp.`;
     }
   }
 
@@ -272,7 +314,6 @@ function updatePlatformUI(platform) {
 
 // Setup Event Listeners
 function setupEventListeners() {
-  // Platform tab clicks
   platformTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const p = tab.getAttribute('data-platform');
@@ -280,15 +321,40 @@ function setupEventListeners() {
     });
   });
 
-  // Sender Name & Toggle
   senderNameInput.addEventListener('input', () => {
     updateLiveMessagePreview();
     updatePlatformUI(currentPlatform);
   });
 
-  includeSenderCheckbox.addEventListener('change', () => {
-    updateLiveMessagePreview();
-  });
+  if (includeSenderCheckbox) {
+    includeSenderCheckbox.addEventListener('change', () => {
+      updateLiveMessagePreview();
+    });
+  }
+
+  if (includeDatetimeCheckbox) {
+    includeDatetimeCheckbox.addEventListener('change', () => {
+      updateLiveMessagePreview();
+    });
+  }
+
+  // Insert Time Stamp Chip
+  if (insertTimeChip) {
+    insertTimeChip.addEventListener('click', () => {
+      const stamp = `[${formatDateTime()}]`;
+      const start = messageInput.selectionStart;
+      const end = messageInput.selectionEnd;
+      const text = messageInput.value;
+      if (text.trim() === '') {
+        messageInput.value = stamp + ' ';
+      } else {
+        messageInput.value = text.substring(0, start) + ' ' + stamp + ' ' + text.substring(end);
+      }
+      messageInput.dispatchEvent(new Event('input'));
+      messageInput.focus();
+      showToast('Timestamp inserted into message! 🕒', 'info');
+    });
+  }
 
   // Phone input handling
   phoneInput.addEventListener('input', handlePhoneInput);
@@ -352,7 +418,7 @@ function setupEventListeners() {
       showToast('Please type a message first', 'error');
       return;
     }
-    copyToClipboard(formatted, 'Full message (with star66) copied to clipboard! 📋');
+    copyToClipboard(formatted, 'Full message (with star66 & Time) copied! 📋');
   });
 
   // Copy Direct Link button
@@ -455,7 +521,7 @@ function getPlatformPayload() {
     };
 
   } else {
-    // Social platforms: Instagram, Snapchat, Messenger
+    // Social platforms
     const username = socialIdInput.value.trim().replace(/^@/, '');
     if (!username) {
       showToast(`Please enter the ${currentPlatform} username or ID`, 'error');
@@ -503,20 +569,19 @@ function handleSend() {
     document.body.removeChild(link);
 
   } else if (currentPlatform === 'instagram') {
-    // Copy the message signed with star66 to clipboard, then open Instagram direct chat
-    copyToClipboard(payload.message, `Message signed by ${payload.sender} copied! Opening Instagram DM...`);
+    copyToClipboard(payload.message, `Message with ${payload.sender} & time copied! Opening Instagram DM...`);
     setTimeout(() => {
       window.open(payload.url, '_blank', 'noopener,noreferrer');
     }, 400);
 
   } else if (currentPlatform === 'snapchat') {
-    copyToClipboard(payload.message, `Message signed by ${payload.sender} copied! Opening Snapchat...`);
+    copyToClipboard(payload.message, `Message with ${payload.sender} & time copied! Opening Snapchat...`);
     setTimeout(() => {
       window.open(payload.url, '_blank', 'noopener,noreferrer');
     }, 400);
 
   } else if (currentPlatform === 'messenger') {
-    copyToClipboard(payload.message, `Message signed by ${payload.sender} copied! Opening Facebook Messenger...`);
+    copyToClipboard(payload.message, `Message with ${payload.sender} & time copied! Opening Facebook Messenger...`);
     setTimeout(() => {
       window.open(payload.url, '_blank', 'noopener,noreferrer');
     }, 400);
@@ -647,9 +712,10 @@ function renderHistoryModal() {
     const card = document.createElement('div');
     card.className = 'group p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 flex items-center justify-between hover:border-emerald-500/50 transition-all cursor-pointer';
     
-    const formattedDate = formatTimeAgo(new Date(item.timestamp));
+    const sendDate = new Date(item.timestamp);
+    const formattedDate = formatDateTime(sendDate);
+    const timeAgo = formatTimeAgo(sendDate);
     
-    // Platform badge color & label
     let badgeColor = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300';
     let platLabel = item.platform.toUpperCase();
     if (item.platform === 'instagram') badgeColor = 'bg-pink-100 text-pink-800 dark:bg-pink-950/80 dark:text-pink-300';
@@ -664,8 +730,10 @@ function renderHistoryModal() {
             <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${badgeColor}">${platLabel}</span>
             <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-mono">${item.target}</span>
             <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">(from ${item.sender || 'star66'})</span>
-            <span class="text-[10px] text-slate-400">• ${formattedDate}</span>
           </div>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+            📅 ${formattedDate} (${timeAgo})
+          </p>
           <p class="text-xs text-slate-500 dark:text-slate-400 truncate mt-1">
             ${item.message || '<span class="italic opacity-60">Blank message</span>'}
           </p>
@@ -720,10 +788,9 @@ function loadHistoryItem(item) {
 
   senderNameInput.value = item.sender || 'star66';
   
-  // Clean off the trailing signature if re-loading
   let cleanMsg = item.message || '';
-  if (cleanMsg.includes('— Sent by ')) {
-    cleanMsg = cleanMsg.split('\n\n— Sent by ')[0];
+  if (cleanMsg.includes('\n\n— ')) {
+    cleanMsg = cleanMsg.split('\n\n— ')[0];
   }
   messageInput.value = cleanMsg;
 
