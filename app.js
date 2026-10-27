@@ -51,6 +51,13 @@ const qrDoneBtn = document.getElementById('qr-done-btn');
 const qrCanvas = document.getElementById('qrcode-canvas');
 const qrTargetText = document.getElementById('qr-target-text');
 
+// Website / App QR Modal
+const openAppQrBtn = document.getElementById('open-app-qr-btn');
+const appQrModal = document.getElementById('app-qr-modal');
+const closeAppQrModal = document.getElementById('close-app-qr-modal');
+const appQrDoneBtn = document.getElementById('app-qr-done-btn');
+const copySiteUrlBtn = document.getElementById('copy-site-url-btn');
+
 // History Modal
 const toggleHistoryBtn = document.getElementById('toggle-history-btn');
 const historyModal = document.getElementById('history-modal');
@@ -431,6 +438,33 @@ function setupEventListeners() {
   qrModal.addEventListener('click', (e) => {
     if (e.target === qrModal) qrModal.classList.add('hidden');
   });
+
+  // Website / App QR Modal
+  if (openAppQrBtn) {
+    openAppQrBtn.addEventListener('click', () => {
+      if (appQrModal) appQrModal.classList.remove('hidden');
+    });
+  }
+  if (closeAppQrModal) {
+    closeAppQrModal.addEventListener('click', () => {
+      if (appQrModal) appQrModal.classList.add('hidden');
+    });
+  }
+  if (appQrDoneBtn) {
+    appQrDoneBtn.addEventListener('click', () => {
+      if (appQrModal) appQrModal.classList.add('hidden');
+    });
+  }
+  if (appQrModal) {
+    appQrModal.addEventListener('click', (e) => {
+      if (e.target === appQrModal) appQrModal.classList.add('hidden');
+    });
+  }
+  if (copySiteUrlBtn) {
+    copySiteUrlBtn.addEventListener('click', () => {
+      copyToClipboard('https://vasuyadav66.github.io/whatsapp-direct-sender/', 'Website URL copied to clipboard! 🌐');
+    });
+  }
 
   // History modal toggle
   toggleHistoryBtn.addEventListener('click', () => {

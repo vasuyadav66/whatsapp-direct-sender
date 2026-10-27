@@ -75,21 +75,27 @@
           </div>
         </div>
 
-        <!-- Controls: Clock, History, Theme Toggle -->
+        <!-- Controls: Clock, App QR, History, Theme Toggle -->
         <div class="flex items-center space-x-2 sm:space-x-3">
           <!-- Live Date & Time Clock Badge -->
-          <div id="live-clock-badge" class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-mono font-medium border border-slate-200/80 dark:border-slate-700/80 shadow-sm" title="Current Local Time & Date">
+          <div id="live-clock-badge" class="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 text-xs font-mono font-medium border border-slate-200/80 dark:border-slate-700/80 shadow-sm" title="Current Local Time & Date">
             <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-500"></i>
             <span id="live-clock-text">--:-- --</span>
           </div>
 
-          <button id="toggle-history-btn" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all">
+          <!-- Website / App QR Code Button -->
+          <button id="open-app-qr-btn" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-xl text-slate-700 dark:text-slate-300 bg-slate-100/80 dark:bg-slate-800/80 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 border border-slate-200 dark:border-slate-700 transition-all" title="Scan to open DirectChat on your phone">
+            <i data-lucide="qr-code" class="w-4 h-4 text-emerald-500"></i>
+            <span class="hidden sm:inline">Website QR</span>
+          </button>
+
+          <button id="toggle-history-btn" class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all">
             <i data-lucide="history" class="w-4 h-4"></i>
             <span class="hidden sm:inline">Recents</span>
             <span id="history-count-badge" class="hidden px-1.5 py-0.2 bg-emerald-500 text-white text-[10px] rounded-full font-bold">0</span>
           </button>
 
-          <button id="theme-toggle-btn" title="Toggle theme" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all">
+          <button id="theme-toggle-btn" title="Toggle theme" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all">
             <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
           </button>
         </div>
@@ -104,7 +110,7 @@
       <div class="text-center max-w-xl mx-auto mb-6">
         <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-2.5">
           <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-indicator"></span>
-          <span>Sending as <b class="underline">star66</b> with Date & Time</span>
+          <span>Sending as <b class="underline">star66</b> • QR & Direct Chat</span>
         </div>
         <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Send Direct Messages Across <span class="bg-gradient-to-r from-emerald-500 via-pink-500 to-blue-500 bg-clip-text text-transparent">Any Platform</span>
@@ -376,7 +382,7 @@
                 class="py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center justify-center space-x-1.5 transition-all"
               >
                 <i data-lucide="qr-code" class="w-3.5 h-3.5 text-purple-500"></i>
-                <span>QR Code</span>
+                <span>Chat QR</span>
               </button>
             </div>
 
@@ -411,7 +417,7 @@
         </div>
       </div>
 
-      <!-- QR Code Modal -->
+      <!-- Chat Destination QR Code Modal -->
       <div id="qr-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-sm rounded-3xl p-6 shadow-2xl relative text-center">
           
@@ -440,12 +446,50 @@
         </div>
       </div>
 
+      <!-- Website / App QR Code Modal -->
+      <div id="app-qr-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-sm rounded-3xl p-6 shadow-2xl relative text-center">
+          
+          <button id="close-app-qr-modal" class="absolute right-4 top-4 p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-white bg-slate-100 dark:bg-slate-800 transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+
+          <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950/80 rounded-2xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 mx-auto mb-3">
+            <i data-lucide="globe" class="w-6 h-6"></i>
+          </div>
+
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">DirectChat Website QR</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">
+            Scan with your phone to open and use the DirectChat website anywhere, anytime!
+          </p>
+
+          <!-- Generated QR Code Image -->
+          <div class="flex justify-center p-3 bg-white rounded-2xl border border-slate-200 shadow-inner max-w-[210px] mx-auto mb-4">
+            <img src="website-qr.png" alt="Website QR Code" class="w-[180px] h-[180px] object-contain rounded-lg" />
+          </div>
+
+          <p class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 break-all mb-4 px-2 select-all">
+            https://vasuyadav66.github.io/whatsapp-direct-sender/
+          </p>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button id="copy-site-url-btn" class="py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-semibold text-xs transition-colors flex items-center justify-center space-x-1.5">
+              <i data-lucide="copy" class="w-3.5 h-3.5 text-emerald-500"></i>
+              <span>Copy URL</span>
+            </button>
+            <button id="app-qr-done-btn" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-colors">
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+
     </main>
 
     <!-- Footer -->
     <footer class="w-full py-5 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200/60 dark:border-slate-800/60">
       <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p>DirectChat — Multi-platform direct sender with identity star66, Date & Time.</p>
+        <p>DirectChat — Multi-platform direct sender with identity star66, Date, Time & QR.</p>
         <p class="flex items-center space-x-1">
           <span>WhatsApp • Instagram • Snapchat • Messenger • SMS</span>
         </p>
